@@ -545,6 +545,11 @@ class PaynlPaymentMethods extends PaymentModule
     {
         $apitoken = Tools::getValue('PAYNL_API_TOKEN', Configuration::get('PAYNL_API_TOKEN'));
         $serviceId = Tools::getValue('PAYNL_SERVICE_ID', Configuration::get('PAYNL_SERVICE_ID'));
+        $gateway = Tools::getValue('PAYNL_FAILOVER_GATEWAY', Configuration::get('PAYNL_FAILOVER_GATEWAY'));
+
+        if(!empty($gateway)) {
+            \Paynl\Config::setApiBase(trim($gateway));
+        }
         \Paynl\Config::setApiToken($apitoken);
         \Paynl\Config::setServiceId($serviceId);
     }
@@ -1257,6 +1262,7 @@ class PaynlPaymentMethods extends PaymentModule
             Configuration::updateValue('PAYNL_API_TOKEN', Tools::getValue('PAYNL_API_TOKEN'));
             Configuration::updateValue('PAYNL_SERVICE_ID', Tools::getValue('PAYNL_SERVICE_ID'));
             Configuration::updateValue('PAYNL_TEST_MODE', Tools::getValue('PAYNL_TEST_MODE'));
+            Configuration::updateValue('PAYNL_FAILOVER_GATEWAY', Tools::getValue('PAYNL_FAILOVER_GATEWAY'));
             Configuration::updateValue('PAYNL_VALIDATION_DELAY', Tools::getValue('PAYNL_VALIDATION_DELAY'));
             Configuration::updateValue('PAYNL_PAYLOGGER', Tools::getValue('PAYNL_PAYLOGGER'));
             Configuration::updateValue('PAYNL_DESCRIPTION_PREFIX', Tools::getValue('PAYNL_DESCRIPTION_PREFIX'));
@@ -1296,6 +1302,13 @@ class PaynlPaymentMethods extends PaymentModule
                         'label' => $this->l('Transaction description prefix'),
                         'name' => 'PAYNL_DESCRIPTION_PREFIX',
                         'desc' => $this->l('A prefix added to the transaction description'),
+                        'required' => false
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Failover gateway'),
+                        'name' => 'PAYNL_FAILOVER_GATEWAY',
+                        'desc' => $this->l('Leave this empty unless we at PAY. advice you to fill this in with a gateway we give to you'),
                         'required' => false
                     ),
                   array(
@@ -1436,6 +1449,7 @@ class PaynlPaymentMethods extends PaymentModule
             'PAYNL_API_TOKEN' => Tools::getValue('PAYNL_API_TOKEN', Configuration::get('PAYNL_API_TOKEN')),
             'PAYNL_SERVICE_ID' => Tools::getValue('PAYNL_SERVICE_ID', Configuration::get('PAYNL_SERVICE_ID')),
             'PAYNL_TEST_MODE' => Tools::getValue('PAYNL_TEST_MODE', Configuration::get('PAYNL_TEST_MODE')),
+            'PAYNL_FAILOVER_GATEWAY' => Tools::getValue('PAYNL_FAILOVER_GATEWAY', Configuration::get('PAYNL_FAILOVER_GATEWAY')),
             'PAYNL_VALIDATION_DELAY' => Tools::getValue('PAYNL_VALIDATION_DELAY', Configuration::get('PAYNL_VALIDATION_DELAY')),
             'PAYNL_PAYLOGGER' => Tools::getValue('PAYNL_PAYLOGGER', Configuration::get('PAYNL_PAYLOGGER')),
             'PAYNL_DESCRIPTION_PREFIX' => Tools::getValue('PAYNL_DESCRIPTION_PREFIX', Configuration::get('PAYNL_DESCRIPTION_PREFIX')),
